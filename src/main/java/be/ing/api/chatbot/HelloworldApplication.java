@@ -21,9 +21,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.util.Properties;
+
 @SpringBootApplication
 @RestController
 public class HelloworldApplication {
+
+  private static String version = null;
+
   @RequestMapping("/")
   public String home() {
     return "Hello World!";
@@ -39,6 +45,26 @@ public class HelloworldApplication {
   public String healthy() {
     // Message body required though ignored
     return "Still surviving.";
+  }
+
+  @RequestMapping("/_ah/version")
+  public String version() {
+    if (version == null) {
+      setVersion();
+    }
+
+    return version;
+  }
+
+  private void setVersion() {
+    final Properties properties = new Properties();
+    try {
+      properties.load(this.getClass().getClassLoader().getResourceAsStream("application.properties"));
+      version = properties.getProperty("version");
+    } catch (NullPointerException | IOException e) {
+      e.printStackTrace();
+      version = "version unknown";
+    }
   }
 
   public static void main(String[] args) {
