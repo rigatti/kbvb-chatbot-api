@@ -18,15 +18,6 @@
         </sourceRoots>
       </configuration>
     </facet>
-    <facet type="app-engine-standard" name="Google App Engine Standard">
-      <configuration />
-    </facet>
-    <facet type="app-engine-flexible" name="Google App Engine Flexible">
-      <configuration>
-        <option name="appYamlPath" value="C:\workspaces\kbvb\kbvb-chatbot-api\src\main\appengine\app.yaml" />
-        <option name="dockerDirectory" value="C:\workspaces\kbvb\kbvb-chatbot-api\src\main\docker" />
-      </configuration>
-    </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/target/classes" />
