@@ -26,13 +26,13 @@ import java.util.Properties;
 
 @SpringBootApplication
 @RestController
-public class HelloworldApplication {
+public class ChatBotApplication {
 
   private static String version = null;
 
   @RequestMapping("/")
   public String home() {
-    return "Hello World!";
+    return "Hello, this api is for testing purpose! Only some functionalities are ready to be used.";
   }
 
   /**
@@ -68,6 +68,6 @@ public class HelloworldApplication {
   }
 
   public static void main(String[] args) {
-    SpringApplication.run(HelloworldApplication.class, args);
+    SpringApplication.run(ChatBotApplication.class, args);
   }
 }
