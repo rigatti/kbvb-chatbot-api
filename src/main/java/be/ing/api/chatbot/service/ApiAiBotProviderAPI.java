@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class APIAIBotProviderAPI {
+public class ApiAiBotProviderAPI {
 
     @Qualifier("API_DIALOGFLOW_VERSION")
     @Autowired
@@ -34,10 +34,6 @@ public class APIAIBotProviderAPI {
     @Qualifier("API_DIALOGFLOW_TOKEN")
     @Autowired
     private String API_DIALOGFLOW_TOKEN;
-
-    @Qualifier("ENV_INTRANET")
-    @Autowired
-    private boolean ENV_INTRANET;
 
     @Autowired
     RestTemplate restTemplate;
