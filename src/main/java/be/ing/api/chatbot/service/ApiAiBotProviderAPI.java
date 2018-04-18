@@ -1,21 +1,23 @@
 package be.ing.api.chatbot.service;
 
+import be.ing.api.chatbot.exception.InvalidSpeechException;
 import be.ing.api.chatbot.model.ChatMessages.ChatMessage;
 import be.ing.api.chatbot.model.ChatMessages.TextMessage;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import be.ing.api.chatbot.service.model.apiaibot.common.Context;
+import be.ing.api.chatbot.service.model.apiaibot.common.MessageType;
+import be.ing.api.chatbot.service.model.apiaibot.request.ApiAiBotRequest;
+import be.ing.api.chatbot.service.model.apiaibot.response.ApiAiBotResponse;
+import be.ing.api.chatbot.service.model.apiaibot.response.Fulfillment;
+import be.ing.api.chatbot.service.model.apiaibot.response.Message;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class ApiAiBotProviderAPI {
 
@@ -38,7 +40,7 @@ public class ApiAiBotProviderAPI {
     @Autowired
     RestTemplate restTemplate;
 
-    JsonParser jsonParser = new JsonParser();
+    ObjectMapper objectMapper = new ObjectMapper();
 
     private final int RESPONSE_TIMEOUT                  = 10; // Seconds
 
@@ -48,9 +50,8 @@ public class ApiAiBotProviderAPI {
     private final int MESSAGE_MULTIPLE_CHOICE           = 2;
     private final int MESSAGE_CUSTOM_TYPE               = 4;
 
-    public List<ChatMessage> getResponse(String query) throws Exception {
+    public List<ChatMessage> getResponse(String query) throws Exception, InvalidSpeechException {
 
-        ReactorClientHttpConnector connector;
         // HttpHeaders
         HttpHeaders headers = new HttpHeaders();
 
@@ -60,43 +61,47 @@ public class ApiAiBotProviderAPI {
         headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + API_DIALOGFLOW_TOKEN);
 
         // HttpEntity<String>: To get result as String.
-        HttpEntity<String> entity = new HttpEntity<String>(buildRequestBody(query).toString(), headers);
+        HttpEntity<String> entity = new HttpEntity<String>(buildRequestBody(query), headers);
 
         ResponseEntity<String> response = restTemplate.exchange("https://" + API_DIALOGFLOW_DOMAIN + API_DIALOGFLOW_PATH + "?v=" + API_DIALOGFLOW_VERSION, HttpMethod.POST, entity, String.class);
 
         if (response.getStatusCode().is2xxSuccessful()) {
-            JsonObject  jsonResponse = jsonParser.parse(response.getBody()).getAsJsonObject();
-            JsonObject jsonResult = jsonResponse.getAsJsonObject("result");
-            JsonObject jsonFulfillment = jsonResult.getAsJsonObject("fulfillment");
+            ObjectMapper mapper = new ObjectMapper();
+            ApiAiBotResponse apiAiBotResponse = mapper.readValue(response.getBody(), ApiAiBotResponse.class);
+            Fulfillment fulfillment = apiAiBotResponse.getResult().getFulfillment();
 
-            return __createBotMessages(jsonFulfillment.getAsJsonArray("messages"));
+            return createBotMessages(fulfillment.getMessages());
 
         } else {
-            //
             throw new Exception("Error while getting data from Dialogflow");
         }
     }
 
-    private JsonObject buildRequestBody(String query) {
-        JsonObject jsonObject = new JsonObject();
+    private String buildRequestBody(String query) throws JsonProcessingException {
+        ApiAiBotRequest.ApiAiBotRequestBuilder requestBuilder = ApiAiBotRequest.builder();
 
-        jsonObject.addProperty("lang", "fr");
-        jsonObject.addProperty("sessionId", __createSessionID() );
-        jsonObject.addProperty("query", query);
+        Context context = new Context();
+        context.setName("PromptedWelcome");
+        context.setLifespan(5);
 
-        return jsonObject;
+        requestBuilder.lang("fr");
+        requestBuilder.sessionId(createSessionID());
+        requestBuilder.query(query);
+        requestBuilder.contexts(Arrays.asList(context));
+
+        return objectMapper.writeValueAsString(requestBuilder.build());
     }
 
-    protected String __createSessionID() {
+    protected String createSessionID() {
         UUID uniqueKey = UUID.randomUUID();
         return uniqueKey.toString();
     }
 
-    protected List<ChatMessage> __createBotMessages(JsonArray messages) {
+    protected List<ChatMessage> createBotMessages(List<Message> messages) throws InvalidSpeechException {
 
-        List<ChatMessage> botMessages = null;
+        List<ChatMessage> botMessages = Collections.EMPTY_LIST;
 
-        if (messages==null) {
+        if (messages == null) {
             //LOG.warn("No messages available in the bot response, unable to create not messages.");
             return botMessages;
         }
@@ -109,15 +114,15 @@ public class ApiAiBotProviderAPI {
 
             botMessages = new ArrayList<>(numMessages);
 
-            for (JsonElement message : messages) {
-                JsonObject msgObj = message.getAsJsonObject();
+            for (Message message : messages) {
 
-                int type = msgObj.get("type").getAsInt();
+
+                int type = mapTypes(message.getType());
 
                 ChatMessage botMessage = null;
                 switch(type) {
-                    case MESSAGE_TEXT_TYPE:
-                        botMessage = __createTextMessageFrom(msgObj);
+                    case MESSAGE_TEXT_TYPE :
+                        botMessage = createTextMessageFrom(message);
                         break;
 //                    case MESSAGE_IMAGE_TYPE:
 //                        botMessage = __createImageMessageFrom(msgObj);
@@ -148,13 +153,25 @@ public class ApiAiBotProviderAPI {
         return botMessages;
     }
 
-    protected TextMessage __createTextMessageFrom(JsonObject message) {
-        // Speech is mandatory, so let it fail if not found
-        String speech = message.get("speech").getAsString();
-        if(!speech.isEmpty() || speech.equals("")) {
-            return new TextMessage(speech);
+    private int mapTypes(String type) {
+        if (StringUtils.isNumeric(type)) {
+            return Integer.parseInt(type);
+        } else {
+            return MessageType.MESSAGE_TYPE_UNKNOWN.getNumericValue();//MessageType.getBy(type).getNumericValue();
         }
+    }
 
-        return null;
+    protected TextMessage createTextMessageFrom(Message message) throws InvalidSpeechException {
+
+        String speech = message.getSpeech();
+//        if ( StringUtils.isEmpty(speech) ) {
+//            speech = message.getTextToSpeech();
+//        }
+
+        if ( StringUtils.isNotEmpty(speech) ) {
+            return new TextMessage(speech);
+        } else {
+            throw new InvalidSpeechException("Error while getting the speech value for text message. Can not be empty.");
+        }
     }
 }
