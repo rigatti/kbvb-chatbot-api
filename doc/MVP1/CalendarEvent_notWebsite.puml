@@ -6,18 +6,22 @@ skinparam maxmessagesize 180
 title <b><font size="20">Sequence flow for MVP1 - Get a calendar event</font></b>
 
 actor User
+participant GoogleAssistant
 participant ChatBotApi
 participant DialogFlowApi
 participant FourCastApi
 
-User -> ChatBotApi: get(plain text)
-ChatBotApi -> DialogFlowApi: get(plain text)
-DialogFlowApi -> DialogFlowApi: Isolate intent and keywords based on plain text input
+User -> GoogleAssistant: input voice
+GoogleAssistant -> ChatBotApi: How to reach chatbotApi? Should go through DialogFlow no ?
+GoogleAssistant -> ChatBotApi: get(plain text, context+params and sessionId if exist)
+ChatBotApi -> DialogFlowApi: get(plain text, context+params and sessionId if exist)
+DialogFlowApi -> DialogFlowApi: Isolate intent and keywords based on input
 DialogFlowApi -> ChatBotApi: return intent and keywords
 ChatBotApi -> ChatBotApi: prepare data and context
 ChatBotApi -> FourCastApi: get(context and keywords)
 FourCastApi -> FourCastApi: Extract data based on keywords for a given context
 FourCastApi -> ChatBotApi: return data corresponding to keywords
-ChatBotApi -> User
+ChatBotApi -> GoogleAssistant: return data, context+params and sessionId for next request
+GoogleAssistant -> User: output voice
 
 @enduml
