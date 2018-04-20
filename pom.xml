@@ -64,12 +64,21 @@
       <version>2.8.2</version>
     </dependency>
 
-
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.frogermcs.gactions</groupId>
+      <artifactId>gactions</artifactId>
+      <version>0.1.3-SNAPSHOT</version>
+    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>com.macasaet.google.conversation</groupId>-->
+      <!--<artifactId>google-actions-conversation-api</artifactId>-->
+      <!--<version>0.0.14</version>-->
+    <!--</dependency>-->
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -90,6 +99,13 @@
       <artifactId>jul-to-slf4j</artifactId>
       <version>1.7.4</version>
       <scope>provided</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>22.0</version>
     </dependency>
 
   </dependencies>
@@ -127,4 +143,10 @@
 <!-- END plugin -->
     </plugins>
   </build>
+  <repositories>
+    <repository>
+      <id>jcenter</id>
+      <url>https://jcenter.bintray.com/</url>
+    </repository>
+  </repositories>
 </project>
