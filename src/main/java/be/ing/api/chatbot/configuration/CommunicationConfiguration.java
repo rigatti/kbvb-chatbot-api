@@ -31,6 +31,6 @@ public class CommunicationConfiguration {
     }
 
     private boolean isIngEmployeeNetwork() throws UnknownHostException {
-        return StringUtils.startsWith(Inet4Address.getLocalHost().getHostAddress(), "10.241.");
+        return StringUtils.startsWithAny(Inet4Address.getLocalHost().getHostAddress(), new String[]{"10.241.", "10.243."});
     }
 }
