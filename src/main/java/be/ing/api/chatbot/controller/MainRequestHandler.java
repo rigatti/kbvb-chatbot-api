@@ -9,15 +9,14 @@ import com.frogermcs.gactions.api.RequestHandler;
 import com.frogermcs.gactions.api.request.RootRequest;
 import com.frogermcs.gactions.api.response.RootResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class MainRequestHandler extends RequestHandler {
 
-    @Autowired
     private AiLogic aiLogic;
 
-    MainRequestHandler(RootRequest rootRequest) {
+    MainRequestHandler(RootRequest rootRequest, AiLogic aiLogic) {
         super(rootRequest);
+        this.aiLogic = aiLogic;
     }
 
     @Override

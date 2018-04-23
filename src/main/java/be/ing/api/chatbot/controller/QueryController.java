@@ -52,7 +52,7 @@ public class QueryController {
     public void callAction(HttpServletRequest request, HttpServletResponse response) {
         AssistantActions assistantActions =
                 new AssistantActions.Builder(new AppEngineResponseHandler(response))
-                        .addRequestHandlerFactory(StandardIntents.MAIN, new MainRequestHandlerFactory())
+                        .addRequestHandlerFactory(StandardIntents.MAIN, new MainRequestHandlerFactory(aiLogic))
 //                        .addRequestHandlerFactory(StandardIntents.TEXT, new TextRequestHandlerFactory())
 //                        .addRequestHandlerFactory(StandardIntents.PERMISSION, new MyPermissionRequestHandlerFactory())
                         .build();
