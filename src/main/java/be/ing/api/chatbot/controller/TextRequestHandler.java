@@ -10,11 +10,11 @@ import com.frogermcs.gactions.api.request.RootRequest;
 import com.frogermcs.gactions.api.response.RootResponse;
 import org.apache.commons.lang3.StringUtils;
 
-public class MainRequestHandler extends RequestHandler {
+public class TextRequestHandler extends RequestHandler {
 
     private AiLogic aiLogic;
 
-    MainRequestHandler(RootRequest rootRequest, AiLogic aiLogic) {
+    TextRequestHandler(RootRequest rootRequest, AiLogic aiLogic) {
         super(rootRequest);
         this.aiLogic = aiLogic;
     }
@@ -25,12 +25,13 @@ public class MainRequestHandler extends RequestHandler {
         try {
             validateInput(query);
             ChatAnswer chatAnswer = aiLogic.chat(query);
-            return ResponseBuilder.askResponse("Message de bienvenue, " + chatAnswer.getMessage());
+            return ResponseBuilder.askResponse("Voici ma réponse, " + chatAnswer.getMessage());
         } catch (InvalidInputException | InvalidSpeechException | Exception e ) {
             // Log (e.getMessage());
             return ResponseBuilder.tellResponse("Error while processing the request");
         }
     }
+
 
     private void validateInput(String query) throws InvalidInputException {
         int length = StringUtils.length(query);

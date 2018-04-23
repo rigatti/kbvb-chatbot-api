@@ -1,0 +1,31 @@
+{
+  "actions": [
+    {
+      "description": "Welcome action",
+      "name": "MAIN",
+      "fulfillment": {
+        "conversationName": "Best Belgium Football"
+      },
+      "intent": {
+        "name": "actions.intent.MAIN"
+      }
+    },
+    {
+      "description": "Capture all entry",
+      "name": "TEXT",
+      "fulfillment": {
+        "conversationName": "Best Belgium Football"
+      },
+      "intent": {
+        "name": "actions.intent.TEXT"
+      }
+    }
+  ],
+  "conversations": {
+    "Best Belgium Football": {
+      "name": "Best Belgium Football",
+      "url": "https://wip-dot-datalake-chatbot.appspot.com/query/actions"
+    }
+  },
+  "locale": "fr"
+}

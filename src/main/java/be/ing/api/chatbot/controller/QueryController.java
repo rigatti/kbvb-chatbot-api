@@ -53,6 +53,7 @@ public class QueryController {
         AssistantActions assistantActions =
                 new AssistantActions.Builder(new AppEngineResponseHandler(response))
                         .addRequestHandlerFactory(StandardIntents.MAIN, new MainRequestHandlerFactory(aiLogic))
+                        .addRequestHandlerFactory(StandardIntents.TEXT, new TextRequestHandlerFactory(aiLogic))
 //                        .addRequestHandlerFactory(StandardIntents.TEXT, new TextRequestHandlerFactory())
 //                        .addRequestHandlerFactory(StandardIntents.PERMISSION, new MyPermissionRequestHandlerFactory())
                         .build();
