@@ -31,22 +31,21 @@ public class AiLogic {
         }
         QueryResult queryResult = detectIntentTexts(PROJECT_ID, query, sessionId, locale.getLanguage());
 
+        String whatElseRequest = StringUtils.EMPTY;
         if (queryResult.getOutputContextsList().size() > 0) {
             for (Context context : queryResult.getOutputContextsList()) {
                 if (StringUtils.endsWithIgnoreCase(context.getName(), "end_of_flow")) {
 
                     QueryResult queryResultWhatElse = detectIntentTexts(PROJECT_ID, WHAT_ELSE_CAN_I_DO_FOR_YOU, sessionId, locale.getLanguage());
-                    // to do add this response to the main response
+                    whatElseRequest = queryResultWhatElse.getFulfillmentText();
 
                 }
             }
         }
 
-
-
         //String datalakeQuery = dataLakeProviderAPI.getResponse(query);
 
-        return ChatAnswer.builder().status(200).message(queryResult.toString()).build();
+        return ChatAnswer.builder().status(200).message(queryResult.getFulfillmentText() + whatElseRequest).build();
     }
 
     protected String createSessionID() {
