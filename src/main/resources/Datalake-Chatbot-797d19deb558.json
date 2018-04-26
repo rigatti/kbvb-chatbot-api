@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "datalake-chatbot",
+  "private_key_id": "797d19deb5581bd30838c9533009adb0214c1b90",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDKonHmbUl674WL\nnTr/tmE+Pj4kn6WH4qQ0N9JxDMP5eeO51x/cXI7A+4bQsxFE2BMCOzRcedQgZa2J\nMU9Kl6hI6umvbiS4NGCUy3GZOETrwco8cU3a2cWnoSji7pm7DWYKb3/vMVc8WaTU\nsDkw0OLQBcp2465axUEKjerbTKT0foPy6CzysO7ULSrk26Bn6ThINtq2h6GJu5VU\nRp2fH5Hqn8FtXlsRpLJVA9qVFQ9/XXwhCSyZ9EjsP6pplXF8fqlwCby/Idrpg0hu\nG18sselReBoXsxG+Ax2Vaf8omXmlbUUYM7EyM4otCLGsUvnf24xsctKxEAMFdg8q\nAD69OzcjAgMBAAECggEAEBoL2MaHzfJSvdV4igS19UPtgzjoAFEoDcaYlqDv9H1V\nKIADYtE8cYuEwUVUn3a+CyTYoQQrSrtZqIR+RP9utDcHUVUV+BWgmq8QSVKzCbrd\n9TyZqUTTYHuKOLIpQOrF8eYkF9+ai38IfcAjfN4OAxkatAs2k4IhWRN0fW85m/xK\nff2O6V6xWRUBUi9KSoVDYHom62sivERFZqm0hfPBQjaUPlaFk4myER+4ZJwnaoVA\nNtY9JUNpHegkAMYJiBlr6+kyYZVO+VJTXEX9yrhc2qM4tJW1mcQzAO2jLL0cKho9\n4hXB9K8CUONx1NqU2kD0i5P0HBEgU+ZrMK7riVAZBQKBgQD7TSBfE4/rKlXToXX5\nEk8jSObdd044q/OOFhySoI+t5QH+U92rm3x/Nr67Y5MxJlA4k6ay3M3YmypDTild\ne8NAuGKsXj76e38DCO5i/qEG6JD+/QWYUAZYgm/D43r5LWD7Nd5MhMSCrugZeyGY\nseUc+NlX1sOnxljshn/PftLPnQKBgQDObF8O6oJB+3SfJcEX9a6ilcYWJt+jvOEt\n2Y6lOsldnaKs1IkmUpZzcgan7gLWj/9PppITebUir4NkrFA3E0WXUo2rWtmjGAeS\nCZeEXJnjkyZ7r0CBrfYqGi1WBJ1jZDFau/GwZf0+SglbRpIw5lbOAVtAXRJL1E0T\nHA0iL+FFvwKBgGmPTz7Az95/rQe1tgGG8FkpAVkcCW6CxE71+NCaw1/PZ5P2lJHG\nQXiKfXnnbOfjaSUq2IYffBQ1sX4OMhADsdPY4BH5kMjU4VhcAw7wWKG3RVjm3dfK\nHbBGMj59qqVKq4c6bIOF7anbYMF7WHR0nYIbAekE3LD3/1hzcvKtGk59AoGAP0WI\nfZH0CzWAMafo3+c2eC9gYDnaIt4qR1uAFbVHM6K10jPzNgPqichRsfeKdyn8H/X2\noHGVy+PwalNG4xrNIezz76oRO6SJ7YFzJ+caZF8eVJsLMrSX15/edZdEhsqXNjCV\njHQ2g3k+FPQ0qzhvMwXHapscmJGiblES1X/HlRECgYEAnR01GKmA1Qp60Nh3zr85\nNkuZ/ptJVN3F8l2eIjVLXSSmGpmatT/8d1T55FCkKsM/S/9FP/Reu6LJUje0mmIQ\n8tl/iN+TqaW+kYZUuQ0HwYYP08mvjH1OFvjtY3rpTj9/5tQg08k/SwWjS7FTdSnS\nkK3VJY0kGld5+WdWepk8wiY=\n-----END PRIVATE KEY-----\n",
+  "client_email": "datalake-chatbot@appspot.gserviceaccount.com",
+  "client_id": "103643667961596532943",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/datalake-chatbot%40appspot.gserviceaccount.com"
+}
