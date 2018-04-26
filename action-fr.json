@@ -24,7 +24,7 @@
   "conversations": {
     "Best Belgium Football": {
       "name": "Best Belgium Football",
-      "url": "https://wip-dot-datalake-chatbot.appspot.com/query/actions"
+      "url": "https://wipv2-dot-datalake-chatbot.appspot.com/query/actions"
     }
   },
   "locale": "fr"

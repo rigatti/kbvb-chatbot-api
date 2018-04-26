@@ -1,15 +1,24 @@
 package be.ing.api.chatbot.service;
 
-import be.ing.api.chatbot.service.model.datalake.DataLakeRequest;
-import be.ing.api.chatbot.service.model.datalake.DataLakeResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.gax.paging.Page;
+import com.google.appengine.api.appidentity.AppIdentityService;
+import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
+import com.google.appengine.api.urlfetch.*;
+import com.google.apphosting.api.ApiProxy;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+import com.google.common.io.BaseEncoding;
+import com.google.gson.Gson;
+import io.swagger.client.model.CleanDLKPerson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.*;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DataLakeProviderAPI {
 
@@ -29,43 +38,65 @@ public class DataLakeProviderAPI {
     @Autowired
     private String API_FOURCAST_TOKEN;
 
-    @Autowired
-    RestTemplate restTemplate;
-
     ObjectMapper objectMapper = new ObjectMapper();
 
     public String getResponse(String query) throws Exception {
 
-        // HttpHeaders
-        HttpHeaders headers = new HttpHeaders();
+        final AppIdentityService appIdentity = AppIdentityServiceFactory.getAppIdentityService();
+        final BaseEncoding base64 = BaseEncoding.base64();
 
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        // Request to return JSON format
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + API_FOURCAST_TOKEN);
+        //DataLakeProviderAPI.authImplicit();
 
-        // HttpEntity<String>: To get result as String.
-        HttpEntity<String> entity = new HttpEntity<String>(buildRequestBody(query), headers);
+        Map<String, Object> h = new HashMap<>();
+        h.put("typ", "JWT");
+        h.put("alg", "RS256");
 
-        ResponseEntity<String> response = restTemplate.exchange("https://" + API_FOURCAST_DOMAIN + API_FOURCAST_PATH + "?v=" + API_FOURCAST_VERSION, HttpMethod.POST, entity, String.class);
+        String header = base64.encode(new Gson().toJson(h).getBytes());
+        String clientEmail = appIdentity.getServiceAccountName();
 
-        if (response.getStatusCode().is2xxSuccessful()) {
-            ObjectMapper mapper = new ObjectMapper();
-            DataLakeResponse dataLakeResponse = mapper.readValue(response.getBody(), DataLakeResponse.class);
+        long epochTime = System.currentTimeMillis() / 1000;
+        long expire = epochTime + 60 * 60; // an hour from now
 
-            return dataLakeResponse.toString();
+        Map<String, Object> claims = new HashMap<String, Object>();
+        claims.put("iss", clientEmail);
+        claims.put("sub", clientEmail);
+        claims.put("aud", "datalake-cache.appspot.com");
+        claims.put("iat", epochTime);
+        claims.put("exp", expire);
 
-        } else {
-            //
-            throw new Exception("Error while getting data from Dialogflow");
+        String payload = base64.encode(new Gson().toJson(claims).getBytes());
+        String toSign = String.format("%s.%s", header, payload);
+        AppIdentityService.SigningResult result = appIdentity.signForApp(toSign.getBytes());
+
+        String signedJwt = String.format("%s.%s", toSign, base64.encode(result.getSignature()));
+
+        URL url = new URL("https://datalake-cache.appspot.com/_ah/api/kbvb/v1/dlkPersons/" + 10002);
+        FetchOptions fetchOptions = FetchOptions.Builder.validateCertificate().doNotFollowRedirects().setDeadline(30d); //Set timeout to 30 seconds
+        HTTPRequest req = new HTTPRequest(url, HTTPMethod.GET.GET, fetchOptions);
+
+        req.addHeader(new HTTPHeader("X-Appengine-Inbound-Appid", ApiProxy.getCurrentEnvironment().getAppId()));
+        req.addHeader(new HTTPHeader("Content-Type", "application/json"));
+        req.addHeader(new HTTPHeader("Authorization", "Bearer " + signedJwt));
+
+        HTTPResponse res = URLFetchServiceFactory.getURLFetchService().fetch(req);
+        if(res.getResponseCode() < 200 || res.getResponseCode() >= 400) {
+            throw new IOException(String.format("Response code: %d\nReponse content:\n%s", res.getResponseCode(), new String(res.getContent())));
         }
+
+        CleanDLKPerson dlkPerson = objectMapper.readValue(res.getContent(), CleanDLKPerson.class);
+
+        return new String(res.getContent());
     }
 
-    private String buildRequestBody(String query) throws JsonProcessingException {
-        DataLakeRequest.DataLakeRequestBuilder requestBuilder = DataLakeRequest.builder();
+    static void authImplicit() {
+        // If you don't specify credentials when constructing the client, the client library will
+        // look for credentials via the environment variable GOOGLE_APPLICATION_CREDENTIALS.
+        Storage storage = StorageOptions.getDefaultInstance().getService();
 
-        requestBuilder.id("xxxx");
-
-        return objectMapper.writeValueAsString(requestBuilder.build());
+        System.out.println("Buckets:");
+        Page<Bucket> buckets = storage.list();
+        for (Bucket bucket : buckets.iterateAll()) {
+            System.out.println(bucket.toString());
+        }
     }
 }

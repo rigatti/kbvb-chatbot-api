@@ -10,6 +10,8 @@ import com.frogermcs.gactions.api.request.RootRequest;
 import com.frogermcs.gactions.api.response.RootResponse;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Locale;
+
 public class MainRequestHandler extends RequestHandler {
 
     private AiLogic aiLogic;
@@ -22,9 +24,12 @@ public class MainRequestHandler extends RequestHandler {
     @Override
     public RootResponse getResponse() {
         String query = getRootRequest().inputs.get(0).rawInputs.get(0).query;
+        String sessionId = getRootRequest().conversation.conversationId;
+        Locale locale = getRootRequest().user.getLocale();
+
         try {
             validateInput(query);
-            ChatAnswer chatAnswer = aiLogic.chat(query);
+            ChatAnswer chatAnswer = aiLogic.chat(locale, sessionId, query);
             return ResponseBuilder.askResponse("Message de bienvenue, " + chatAnswer.getMessage());
         } catch (InvalidInputException | InvalidSpeechException | Exception e ) {
             // Log (e.getMessage());
