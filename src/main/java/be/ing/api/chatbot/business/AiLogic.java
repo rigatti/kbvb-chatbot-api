@@ -32,7 +32,7 @@ public class AiLogic {
         String whatElseRequest = getWhatElseIntent(queryResult, sessionId, locale);
 
         // do the call to fourcast
-        String datalakeQuery = dataLakeProviderAPI.getResponse(query);
+        //String datalakeQuery = dataLakeProviderAPI.getResponse(query);
 
         return ChatAnswer.builder().status(200).message("API : " + queryResult.getFulfillmentText() + whatElseRequest).build();
     }

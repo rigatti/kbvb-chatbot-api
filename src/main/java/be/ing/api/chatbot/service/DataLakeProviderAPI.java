@@ -1,5 +1,6 @@
 package be.ing.api.chatbot.service;
 
+import be.ing.api.chatbot.service.model.datalake.CleanDLKPerson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
@@ -7,7 +8,6 @@ import com.google.appengine.api.urlfetch.*;
 import com.google.apphosting.api.ApiProxy;
 import com.google.common.io.BaseEncoding;
 import com.google.gson.Gson;
-import io.swagger.client.model.CleanDLKPerson;
 
 import java.io.IOException;
 import java.net.URL;
