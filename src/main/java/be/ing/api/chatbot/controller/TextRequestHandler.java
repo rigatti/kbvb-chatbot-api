@@ -34,6 +34,7 @@ public class TextRequestHandler extends RequestHandler {
             return ResponseBuilder.askResponse(chatAnswer.getMessage());
         } catch (InvalidInputException | InvalidSpeechException | Exception e ) {
             // Log (e.getMessage());
+            e.printStackTrace();
             return ResponseBuilder.tellResponse("Error while processing the request");
         }
     }

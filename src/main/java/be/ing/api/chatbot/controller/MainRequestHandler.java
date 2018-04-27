@@ -32,6 +32,7 @@ public class MainRequestHandler extends RequestHandler {
             ChatAnswer chatAnswer = aiLogic.chat(locale, sessionId, query);
             return ResponseBuilder.askResponse(chatAnswer.getMessage());
         } catch (InvalidInputException | InvalidSpeechException | Exception e ) {
+            e.printStackTrace();
             // Log (e.getMessage());
             return ResponseBuilder.tellResponse("Error while processing the request");
         }

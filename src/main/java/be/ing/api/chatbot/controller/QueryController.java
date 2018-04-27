@@ -31,14 +31,14 @@ public class QueryController {
                 new AssistantActions.Builder(new AppEngineResponseHandler(response))
                         .addRequestHandlerFactory(StandardIntents.MAIN, new MainRequestHandlerFactory(aiLogic))
                         .addRequestHandlerFactory(StandardIntents.TEXT, new TextRequestHandlerFactory(aiLogic))
-//                        .addRequestHandlerFactory(StandardIntents.PERMISSION, new MyPermissionRequestHandlerFactory())
                         .build();
 
-        RootRequest rootRequest = null;
+
         try {
             String requestBody = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-            rootRequest = objectMapper.readValue(requestBody, RootRequest.class);
+
+            RootRequest rootRequest = objectMapper.readValue(requestBody, RootRequest.class);
 
             assistantActions.handleRequest(rootRequest);
 

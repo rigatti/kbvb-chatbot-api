@@ -1,19 +1,13 @@
 package be.ing.api.chatbot.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.gax.paging.Page;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.appengine.api.urlfetch.*;
 import com.google.apphosting.api.ApiProxy;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
 import com.google.common.io.BaseEncoding;
 import com.google.gson.Gson;
 import io.swagger.client.model.CleanDLKPerson;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,30 +16,12 @@ import java.util.Map;
 
 public class DataLakeProviderAPI {
 
-    @Qualifier("API_FOURCAST_VERSION")
-    @Autowired
-    private String API_FOURCAST_VERSION;
-
-    @Qualifier("API_FOURCAST_DOMAIN")
-    @Autowired
-    private String API_FOURCAST_DOMAIN;
-
-    @Qualifier("API_FOURCAST_PATH")
-    @Autowired
-    private String API_FOURCAST_PATH;
-
-    @Qualifier("API_FOURCAST_TOKEN")
-    @Autowired
-    private String API_FOURCAST_TOKEN;
-
     ObjectMapper objectMapper = new ObjectMapper();
 
     public String getResponse(String query) throws Exception {
 
         final AppIdentityService appIdentity = AppIdentityServiceFactory.getAppIdentityService();
         final BaseEncoding base64 = BaseEncoding.base64();
-
-        //DataLakeProviderAPI.authImplicit();
 
         Map<String, Object> h = new HashMap<>();
         h.put("typ", "JWT");
@@ -86,17 +62,5 @@ public class DataLakeProviderAPI {
         CleanDLKPerson dlkPerson = objectMapper.readValue(res.getContent(), CleanDLKPerson.class);
 
         return new String(res.getContent());
-    }
-
-    static void authImplicit() {
-        // If you don't specify credentials when constructing the client, the client library will
-        // look for credentials via the environment variable GOOGLE_APPLICATION_CREDENTIALS.
-        Storage storage = StorageOptions.getDefaultInstance().getService();
-
-        System.out.println("Buckets:");
-        Page<Bucket> buckets = storage.list();
-        for (Bucket bucket : buckets.iterateAll()) {
-            System.out.println(bucket.toString());
-        }
     }
 }

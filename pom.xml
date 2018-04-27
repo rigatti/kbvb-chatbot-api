@@ -189,10 +189,13 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>${appengine.maven.plugin}</version>
         <configuration>
+          <project>datalake-chatbot</project>
+          <version>1</version>
           <enableJarClasses>false</enableJarClasses>
-          <port>8181</port>
+          <port>8088</port>
         </configuration>
       </plugin>
+
 <!-- END plugin -->
     </plugins>
   </build>
